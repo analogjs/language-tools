@@ -45,7 +45,7 @@ connection.onInitialize(params => {
 												start: document.positionAt(styleNodes[i].start),
 												end: document.positionAt(styleNodes[i].end),
 											},
-											source: 'html1',
+											source: 'analog',
 											message: 'Only one style tag is allowed.',
 										});
 									}

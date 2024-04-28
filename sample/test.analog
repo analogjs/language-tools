@@ -1,0 +1,24 @@
+<script lang="ts">
+import { model, signal } from '@angular/core';
+const counter = signal(1);
+
+function increment() {
+  counter.set(counter() + 1);
+}
+const mymod = model();
+</script>
+
+<template>
+  <div class="foo">
+    text
+  </div>
+
+  <button (click)="increment()"></button>
+
+  {{ counter() }}
+</template>
+
+<style>
+.foo {
+  color: red;  }
+</style>

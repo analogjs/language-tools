@@ -13,5 +13,8 @@
 	"devDependencies": {
 		"@types/node": "latest",
 		"typescript": "latest"
+	},
+	"dependencies": {
+		"@angular/core": "^17.3.6"
 	}
 }

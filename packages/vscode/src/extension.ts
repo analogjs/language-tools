@@ -23,7 +23,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		},
 	};
 	const clientOptions: lsp.LanguageClientOptions = {
-		documentSelector: [{ language: 'html1' }],
+		documentSelector: [{ language: 'analog' }],
 		initializationOptions: {
 			typescript: {
 				tsdk: (await getTsdk(context)).tsdk,
@@ -31,15 +31,15 @@ export async function activate(context: vscode.ExtensionContext) {
 		},
 	};
 	client = new lsp.LanguageClient(
-		'html1-language-server',
-		'HTML1 Language Server',
+		'analog-language-server',
+		'AnalogJS Language Server',
 		serverOptions,
 		clientOptions,
 	);
 	await client.start();
 
 	// support for auto close tag
-	activateAutoInsertion('html1', client);
+	activateAutoInsertion('analog', client);
 
 	// support for https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volarjs-labs
 	// ref: https://twitter.com/johnsoncodehk/status/1656126976774791168

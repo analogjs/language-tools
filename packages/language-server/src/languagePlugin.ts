@@ -4,7 +4,7 @@ import * as html from 'vscode-html-languageservice';
 
 export const html1LanguagePlugin: LanguagePlugin = {
 	createVirtualCode(_id, languageId, snapshot) {
-		if (languageId === 'html1') {
+		if (languageId === 'analog') {
 			return createHtml1Code(snapshot);
 		}
 	},
@@ -12,13 +12,14 @@ export const html1LanguagePlugin: LanguagePlugin = {
 		return createHtml1Code(newSnapshot);
 	},
 	typescript: {
-		extraFileExtensions: [{ extension: 'html1', isMixedContent: true, scriptKind: 7 satisfies ts.ScriptKind.Deferred }],
+		extraFileExtensions: [{ extension: 'analog', isMixedContent: true, scriptKind: 3 satisfies ts.ScriptKind.TS }],
 		getScript() {
 			return undefined;
 		},
 		getExtraScripts(fileName, root) {
 			const scripts: ExtraServiceScript[] = [];
 			for (const code of forEachEmbeddedCode(root)) {
+				console.log(code.languageId)
 				if (code.languageId === 'javascript') {
 					scripts.push({
 						fileName: fileName + '.' + code.id + '.js',
@@ -133,6 +134,34 @@ function createHtml1Code(snapshot: ts.IScriptSnapshot): Html1Code {
 					embeddedCodes: [],
 				};
 			}
+			if (root.tag === 'template' && root.startTagEnd !== undefined && root.endTagStart !== undefined) {
+				const text = snapshot.getText(root.startTagEnd, root.endTagStart);
+				const lang = root.attributes?.lang;
+				const isMd = lang === 'md' || lang === '"md"' || lang === "'md'";
+				yield {
+					id: 'script_' + scripts++,
+					languageId: isMd ? 'markdown' : 'analog-template',
+					snapshot: {
+						getText: (start, end) => text.substring(start, end),
+						getLength: () => text.length,
+						getChangeRange: () => undefined,
+					},
+					mappings: [{
+						sourceOffsets: [root.startTagEnd],
+						generatedOffsets: [0],
+						lengths: [text.length],
+						data: {
+							completion: true,
+							format: true,
+							navigation: true,
+							semantic: true,
+							structure: true,
+							verification: true,
+						},
+					}],
+					embeddedCodes: [],
+				};
+			}			
 		}
 	};
 }

@@ -78,6 +78,7 @@ function createHtml1Code(snapshot: ts.IScriptSnapshot): Html1Code {
 
 		let styles = 0;
 		let scripts = 0;
+		let langs = 0;
 
 		for (const root of htmlDocument.roots) {
 			if (root.tag === 'style' && root.startTagEnd !== undefined && root.endTagStart !== undefined) {
@@ -139,8 +140,8 @@ function createHtml1Code(snapshot: ts.IScriptSnapshot): Html1Code {
 				const lang = root.attributes?.lang;
 				const isMd = lang === 'md' || lang === '"md"' || lang === "'md'";
 				yield {
-					id: 'script_' + scripts++,
-					languageId: isMd ? 'markdown' : 'analog-template',
+					id: 'lang_' + langs++,
+					languageId: isMd ? 'markdown' : 'html',
 					snapshot: {
 						getText: (start, end) => text.substring(start, end),
 						getLength: () => text.length,

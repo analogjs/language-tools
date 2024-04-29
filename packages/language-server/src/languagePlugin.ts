@@ -19,7 +19,7 @@ export const html1LanguagePlugin: LanguagePlugin = {
 		getExtraScripts(fileName, root) {
 			const scripts: ExtraServiceScript[] = [];
 			for (const code of forEachEmbeddedCode(root)) {
-				console.log(code.languageId)
+
 				if (code.languageId === 'javascript') {
 					scripts.push({
 						fileName: fileName + '.' + code.id + '.js',

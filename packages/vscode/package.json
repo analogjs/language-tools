@@ -13,7 +13,7 @@
 	"displayName": "AnalogJS Language Features",
 	"description": "AnalogJS Language Features",
 	"author": "Brandon Roberts",
-	"publisher": "analogjs",
+	"publisher": "AnalogJS",
 	"engines": {
 		"vscode": "^1.82.0"
 	},

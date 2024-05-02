@@ -35,6 +35,13 @@ export const html1LanguagePlugin: LanguagePlugin = {
 						extension: '.ts',
 						scriptKind: 3 satisfies ts.ScriptKind.TS,
 					});
+				} else if (code.languageId === 'typescriptreact') {
+					scripts.push({
+						fileName: fileName + '.' + code.id + '.tsx',
+						code,
+						extension: '.ts',
+						scriptKind: 4 satisfies ts.ScriptKind.TSX,
+					});
 				}
 			}
 			return scripts;

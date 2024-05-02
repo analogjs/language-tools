@@ -32,87 +32,63 @@
 				},
 				"extensions": [
 					".analog"
-				],
-				"configuration": "./languages/vue-language-configuration.json"
-			},
-			{
-				"id": "markdown",
-				"configuration": "./languages/markdown-language-configuration.json"
-			},
-			{
-				"id": "html",
-				"configuration": "./languages/sfc-template-language-configuration.json"
-			},
-			{
-				"id": "jade",
-				"configuration": "./languages/sfc-template-language-configuration.json"
-			},
-			{
-				"id": "plaintext",
-				"configuration": "./languages/sfc-template-language-configuration.json"
+				]
 			}
 		],
 		"grammars": [
 			{
 				"language": "analog",
 				"scopeName": "source.analog",
-				"path": "./syntaxes/vue.tmLanguage.json",
+				"path": "./syntaxes/analog.tmLanguage.json",
 				"embeddedLanguages": {
 					"source.analog": "analog",
-					"text": "plaintext",
 					"text.html.derivative": "html",
 					"text.html.markdown": "markdown",
-					"text.pug": "jade",
 					"source.css": "css",
 					"source.css.scss": "scss",
 					"source.css.less": "less",
 					"source.sass": "sass",
 					"source.stylus": "stylus",
-					"source.postcss": "postcss",
-					"source.js": "javascript",
-					"source.ts": "typescript",
-					"source.js.jsx": "javascriptreact",
-					"source.tsx": "typescriptreact",
-					"meta.tag.js": "jsx-tags",
-					"meta.tag.tsx": "jsx-tags",
-					"meta.tag.without-attributes.js": "jsx-tags",
-					"meta.tag.without-attributes.tsx": "jsx-tags",
-					"source.json": "json",
-					"source.json.comments": "jsonc",
-					"source.json5": "json5",
-					"source.yaml": "yaml",
-					"source.toml": "toml",
-					"source.graphql": "graphql"
-				},
-				"unbalancedBracketScopes": [
-					"keyword.operator.relational",
-					"storage.type.function.arrow",
-					"keyword.operator.bitwise.shift",
-					"meta.brace.angle",
-					"punctuation.definition.tag"
-				]
+					"source.postcss": "postcss"
+				}
 			},
-			{
-				"scopeName": "vue.directives",
-				"path": "./syntaxes/vue-directives.json",
-				"injectTo": [
-					"source.analog",
-					"text.html.markdown",
-					"text.html.derivative",
-					"text.pug"
-				]
-			},
-			{
-				"scopeName": "vue.interpolations",
-				"path": "./syntaxes/vue-interpolations.json",
-				"injectTo": [
-					"source.analog",
-					"text.html.markdown",
-					"text.html.derivative",
-					"text.pug"
-				]
-			}
-		]
+      {
+        "path": "./syntaxes/template.json",
+        "scopeName": "template.ng",
+        "injectTo": [
+          "text.html.derivative",
+          "source.analog"
+        ],
+        "embeddedLanguages": {
+          "text.html": "html",
+          "source.css": "css"
+        }
+      },			
+      {
+        "path": "./syntaxes/template-blocks.json",
+        "scopeName": "template.blocks.ng",
+        "injectTo": [
+          "text.html.derivative",
+          "source.analog"
+        ],
+        "embeddedLanguages": {
+          "text.html": "html",
+          "expression.ng": "javascript"
+        }
+      },
+      {
+        "path": "./syntaxes/template-tag.json",
+        "scopeName": "template.tag.ng",
+        "injectTo": [
+          "text.html.derivative",
+          "source.analog"
+        ]
+      },
+      {
+        "path": "./syntaxes/expression.json",
+        "scopeName": "expression.ng"
+      }			
+		]	
 	},
 	"scripts": {
 		"build": "node scripts/build -- --minify",

@@ -2,10 +2,11 @@
 	"private": true,
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/volarjs/starter.git"
+		"url": "https://github.com/analogjs/language-tools.git"
 	},
 	"scripts": {
 		"build": "cd ./packages/vscode && npm run build",
+		"build:server": "cd ./packages/language-server && npm run build",
 		"watch": "cd ./packages/vscode && npm run watch",
 		"pack": "cd ./packages/vscode && npm run pack",
 		"release": "cd ./packages/vscode && npm run release"

@@ -1,12 +1,21 @@
 {
 	"name": "@analogjs/language-server",
+	"description": "LSP server for AnalogJS Language Service",
 	"version": "0.0.1",
 	"main": "out/index.js",
 	"license": "MIT",
+	"scripts": {
+		"build": "tsc"
+	},
 	"files": [
 		"out/**/*.js",
 		"out/**/*.d.ts"
 	],
+  "homepage": "https://analogjs.org",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/analogjs/language-tools.git"
+  },	
 	"bin": {
 		"analog-language-server": "./bin/analog-language-server.js"
 	},
@@ -19,5 +28,8 @@
 		"volar-service-html": "volar-2.1",
 		"volar-service-typescript": "volar-2.1",
 		"vscode-html-languageservice": "^5.1.1"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }

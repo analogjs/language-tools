@@ -2,14 +2,14 @@ import { ExtraServiceScript, forEachEmbeddedCode, type LanguagePlugin, type Virt
 import type * as ts from 'typescript';
 import * as html from 'vscode-html-languageservice';
 
-export const html1LanguagePlugin: LanguagePlugin = {
+export const analogLanguagePlugin: LanguagePlugin = {
 	createVirtualCode(_id, languageId, snapshot) {
 		if (languageId === 'analog') {
-			return createHtml1Code(snapshot);
+			return createAnalogCode(snapshot);
 		}
 	},
 	updateVirtualCode(_id, _oldVirtualCode, newSnapshot) {
-		return createHtml1Code(newSnapshot);
+		return createAnalogCode(newSnapshot);
 	},
 	typescript: {
 		extraFileExtensions: [{ extension: 'analog', isMixedContent: true, scriptKind: 3 satisfies ts.ScriptKind.TS }],
@@ -51,12 +51,12 @@ export const html1LanguagePlugin: LanguagePlugin = {
 
 const htmlLs = html.getLanguageService();
 
-export interface Html1Code extends VirtualCode {
+export interface AnalogVirtualCode extends VirtualCode {
 	// Reuse for custom service plugin
 	htmlDocument: html.HTMLDocument;
 }
 
-function createHtml1Code(snapshot: ts.IScriptSnapshot): Html1Code {
+function createAnalogCode(snapshot: ts.IScriptSnapshot): AnalogVirtualCode {
 	const document = html.TextDocument.create('', 'html', 0, snapshot.getText(0, snapshot.getLength()));
 	const htmlDocument = htmlLs.parseHTMLDocument(document);
 

@@ -97,7 +97,7 @@
 		"release": "npm run build && vsce publish --pre-release"
 	},
 	"devDependencies": {
-		"@html1/language-server": "workspace:*",
+		"@analogjs/language-server": "workspace:*",
 		"@types/vscode": "^1.82.0",
 		"@volar/language-server": "~2.1.0",
 		"@volar/vscode": "~2.1.0",

@@ -4,6 +4,10 @@
 
 AnalogJS Language Features can be added to Visual Studio Code by installing the [plugin](https://marketplace.visualstudio.com/items?itemName=AnalogJS.vscode-analog)
 
+## WebStorm
+
+WebStorm has its own plugin for AnalogJS, you can find it [here](https://plugins.jetbrains.com/plugin/23913-analog)
+
 ## Neovim
 
 To get the language features working in Neovim some additional configuration is required.

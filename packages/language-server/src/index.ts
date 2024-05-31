@@ -18,7 +18,7 @@ connection.onInitialize(params => {
 			createHtmlService(),
 			createCssService(),
 			createEmmetService(),
-			...createTypeScriptServices(tsdk.typescript, tsdk.diagnosticMessages),
+			...createTypeScriptServices(tsdk.typescript),
 		],
 		createTypeScriptProject(tsdk.typescript, tsdk.diagnosticMessages, () => [analogLanguagePlugin]),
 	);

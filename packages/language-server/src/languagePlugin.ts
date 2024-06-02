@@ -14,9 +14,6 @@ export const analogLanguagePlugin: LanguagePlugin<URI> = {
 			return createAnalogCode(snapshot);
 		}
 	},
-	updateVirtualCode(_uri, _oldVirtualCode, newSnapshot) {
-		return createAnalogCode(newSnapshot);
-	},
 	typescript: {
 		extraFileExtensions: [{ extension: 'analog', isMixedContent: true, scriptKind: 3 satisfies ts.ScriptKind.TS }],
 		getServiceScript() {

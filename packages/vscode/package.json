@@ -99,8 +99,8 @@
 	"devDependencies": {
 		"@analogjs/language-server": "workspace:*",
 		"@types/vscode": "^1.82.0",
-		"@volar/language-server": "~2.3.0-alpha.4",
-		"@volar/vscode": "~2.3.0-alpha.4",
+		"@volar/language-server": "~2.3.0-alpha.5",
+		"@volar/vscode": "~2.3.0-alpha.5",
 		"esbuild": "latest",
 		"vsce": "latest",
 		"vscode-languageclient": "^9.0.1"

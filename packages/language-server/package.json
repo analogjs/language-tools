@@ -20,9 +20,9 @@
 		"analog-language-server": "./bin/analog-language-server.js"
 	},
 	"dependencies": {
-		"@volar/language-core": "~2.3.0-alpha.4",
-		"@volar/language-server": "~2.3.0-alpha.4",
-		"@volar/language-service": "~2.3.0-alpha.4",
+		"@volar/language-core": "~2.3.0-alpha.5",
+		"@volar/language-server": "~2.3.0-alpha.5",
+		"@volar/language-service": "~2.3.0-alpha.5",
 		"volar-service-css": "volar-2.3",
 		"volar-service-emmet": "volar-2.3",
 		"volar-service-html": "volar-2.3",

@@ -1,23 +1,26 @@
-import { ExtraServiceScript, forEachEmbeddedCode, type LanguagePlugin, type VirtualCode } from '@volar/language-core';
+import { forEachEmbeddedCode, type LanguagePlugin, type TypeScriptExtraServiceScript, type VirtualCode } from '@volar/language-core';
 import type * as ts from 'typescript';
 import * as html from 'vscode-html-languageservice';
+import { URI } from 'vscode-uri';
 
-export const analogLanguagePlugin: LanguagePlugin = {
-	createVirtualCode(_id, languageId, snapshot) {
+export const analogLanguagePlugin: LanguagePlugin<URI> = {
+	getLanguageId(uri) {
+		if (uri.path.endsWith('.analog')) {
+			return 'analog';
+		}
+	},
+	createVirtualCode(_uri, languageId, snapshot) {
 		if (languageId === 'analog') {
 			return createAnalogCode(snapshot);
 		}
 	},
-	updateVirtualCode(_id, _oldVirtualCode, newSnapshot) {
-		return createAnalogCode(newSnapshot);
-	},
 	typescript: {
 		extraFileExtensions: [{ extension: 'analog', isMixedContent: true, scriptKind: 3 satisfies ts.ScriptKind.TS }],
-		getScript() {
+		getServiceScript() {
 			return undefined;
 		},
-		getExtraScripts(fileName, root) {
-			const scripts: ExtraServiceScript[] = [];
+		getExtraServiceScripts(fileName, root) {
+			const scripts: TypeScriptExtraServiceScript[] = [];
 			for (const code of forEachEmbeddedCode(root)) {
 
 				if (code.languageId === 'javascript') {
@@ -169,7 +172,7 @@ function createAnalogCode(snapshot: ts.IScriptSnapshot): AnalogVirtualCode {
 					}],
 					embeddedCodes: [],
 				};
-			}			
+			}
 		}
 	};
 }

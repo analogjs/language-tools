@@ -1,7 +1,7 @@
 {
 	"name": "@analogjs/language-server",
 	"description": "LSP server for AnalogJS Language Service",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"main": "out/index.js",
 	"license": "MIT",
 	"scripts": {
@@ -20,13 +20,13 @@
 		"analog-language-server": "./bin/analog-language-server.js"
 	},
 	"dependencies": {
-		"@volar/language-core": "~2.3.0",
-		"@volar/language-server": "~2.3.0",
-		"@volar/language-service": "~2.3.0",
-		"volar-service-css": "volar-2.3",
-		"volar-service-emmet": "volar-2.3",
-		"volar-service-html": "volar-2.3",
-		"volar-service-typescript": "volar-2.3",
+		"@volar/language-core": "~2.4.0",
+		"@volar/language-server": "~2.4.0",
+		"@volar/language-service": "~2.4.0",
+		"volar-service-css": "volar-2.4",
+		"volar-service-emmet": "volar-2.4",
+		"volar-service-html": "volar-2.4",
+		"volar-service-typescript": "volar-2.4",
 		"vscode-html-languageservice": "^5.2.0",
 		"vscode-uri": "^3.0.8"
 	},

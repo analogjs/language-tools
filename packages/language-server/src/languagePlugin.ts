@@ -1,4 +1,4 @@
-import { forEachEmbeddedCode, type LanguagePlugin, type TypeScriptExtraServiceScript, type VirtualCode } from '@volar/language-core';
+import { forEachEmbeddedCode, type LanguagePlugin, type VirtualCode } from '@volar/language-core';
 import type * as ts from 'typescript';
 import * as html from 'vscode-html-languageservice';
 import { URI } from 'vscode-uri';
@@ -20,7 +20,7 @@ export const analogLanguagePlugin: LanguagePlugin<URI> = {
 			return undefined;
 		},
 		getExtraServiceScripts(fileName, root) {
-			const scripts: TypeScriptExtraServiceScript[] = [];
+			const scripts = [];
 			for (const code of forEachEmbeddedCode(root)) {
 
 				if (code.languageId === 'javascript') {

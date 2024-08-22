@@ -14,7 +14,9 @@ connection.onInitialize(params => {
 	const tsdk = loadTsdkByPath(params.initializationOptions.typescript.tsdk, params.locale);
 	return server.initialize(
 		params,
-		createTypeScriptProject(tsdk.typescript, tsdk.diagnosticMessages, () => [analogLanguagePlugin]),
+		createTypeScriptProject(tsdk.typescript, tsdk.diagnosticMessages, () => ({
+			languagePlugins:[analogLanguagePlugin]
+		})),
 		[
 			createHtmlService(),
 			createCssService(),

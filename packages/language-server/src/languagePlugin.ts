@@ -125,7 +125,22 @@ function createAnalogCode(snapshot: ts.IScriptSnapshot): AnalogVirtualCode {
 					id: 'script_' + scripts++,
 					languageId: isTs ? 'typescript' : 'javascript',
 					snapshot: {
-						getText: (start, end) => text.substring(start, end),
+						getText: (start, end) => `${text.substring(start, end)}
+/**
+ * Defines additional metadata for the component such as the
+ * selector, providers, and more.
+ */
+declare function defineMetadata(metadata: {}): void;
+/**
+ * Defines the lifecycle hook(ngOnInit) that is called when the
+ * component is initialized.
+ */
+declare function onInit(destroyFn: () => void): void;
+/**
+ * Defines the lifecycle hook(ngOnDestroy) that is called when the
+ * component is destroyed.
+ */
+declare function onDestroy(destroyFn: () => void): void;`,
 						getLength: () => text.length,
 						getChangeRange: () => undefined,
 					},

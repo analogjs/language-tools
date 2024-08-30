@@ -1,57 +1,58 @@
 {
-	"private": true,
-	"name": "vscode-analog",
-	"version": "0.1.3",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/analogjs/language-tools.git",
-		"directory": "packages/vscode"
-	},
-	"categories": [
-		"Programming Languages"
-	],
-	"displayName": "AnalogJS Language Features",
-	"description": "AnalogJS Language Features",
-	"author": "Brandon Roberts",
-	"publisher": "AnalogJS",
-	"engines": {
-		"vscode": "^1.82.0"
-	},
-	"icon": "images/analog.png",
-	"activationEvents": [
-		"onLanguage:analog"
-	],
-	"main": "./dist/client.js",
-	"contributes": {
-		"languages": [
-			{
-				"id": "analog",
-				"icon": {
-					"light": "images/analog.png",
-					"dark": "images/analog.png"
-				},
-				"extensions": [
-					".analog"
-				]
-			}
-		],
-		"grammars": [
-			{
-				"language": "analog",
-				"scopeName": "source.analog",
-				"path": "./syntaxes/analog.tmLanguage.json",
-				"embeddedLanguages": {
-					"source.analog": "analog",
-					"text.html.derivative": "html",
-					"text.html.markdown": "markdown",
-					"source.css": "css",
-					"source.css.scss": "scss",
-					"source.css.less": "less",
-					"source.sass": "sass",
-					"source.stylus": "stylus",
-					"source.postcss": "postcss"
-				}
-			},
+  "private": true,
+  "name": "vscode-analog",
+  "version": "0.1.3",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/analogjs/language-tools.git",
+    "directory": "packages/vscode"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "displayName": "AnalogJS Language Features",
+  "description": "AnalogJS Language Features",
+  "author": "Brandon Roberts",
+  "publisher": "AnalogJS",
+  "engines": {
+    "vscode": "^1.82.0"
+  },
+  "icon": "images/analog.png",
+  "activationEvents": [
+    "onLanguage:analog"
+  ],
+  "main": "./dist/client.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "analog",
+        "icon": {
+          "light": "images/analog.png",
+          "dark": "images/analog.png"
+        },
+        "extensions": [
+          ".analog",
+          ".ag"
+        ]
+      }
+    ],
+    "grammars": [
+      {
+        "language": "analog",
+        "scopeName": "source.analog",
+        "path": "./syntaxes/analog.tmLanguage.json",
+        "embeddedLanguages": {
+          "source.analog": "analog",
+          "text.html.derivative": "html",
+          "text.html.markdown": "markdown",
+          "source.css": "css",
+          "source.css.scss": "scss",
+          "source.css.less": "less",
+          "source.sass": "sass",
+          "source.stylus": "stylus",
+          "source.postcss": "postcss"
+        }
+      },
       {
         "path": "./syntaxes/template.json",
         "scopeName": "template.ng",
@@ -63,7 +64,7 @@
           "text.html": "html",
           "source.css": "css"
         }
-      },			
+      },
       {
         "path": "./syntaxes/template-blocks.json",
         "scopeName": "template.blocks.ng",
@@ -87,22 +88,22 @@
       {
         "path": "./syntaxes/expression.json",
         "scopeName": "expression.ng"
-      }			
-		]	
-	},
-	"scripts": {
-		"build": "node scripts/build -- --minify",
-		"watch": "npm run build -- --watch",
-		"pack": "npm run build && vsce package --pre-release",
-		"release": "npm run build && vsce publish --pre-release"
-	},
-	"devDependencies": {
-		"@analogjs/language-server": "workspace:*",
-		"@types/vscode": "^1.82.0",
-		"@volar/language-server": "~2.4.0",
-		"@volar/vscode": "~2.4.0",
-		"esbuild": "latest",
-		"vsce": "latest",
-		"vscode-languageclient": "^9.0.1"
-	}
+      }
+    ]
+  },
+  "scripts": {
+    "build": "node scripts/build -- --minify",
+    "watch": "npm run build -- --watch",
+    "pack": "npm run build && vsce package --pre-release",
+    "release": "npm run build && vsce publish --pre-release"
+  },
+  "devDependencies": {
+    "@analogjs/language-server": "workspace:*",
+    "@types/vscode": "^1.82.0",
+    "@volar/language-server": "~2.4.0",
+    "@volar/vscode": "~2.4.0",
+    "esbuild": "latest",
+    "vsce": "latest",
+    "vscode-languageclient": "^9.0.1"
+  }
 }

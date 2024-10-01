@@ -1,0 +1,42 @@
+<script lang="ts">
+import { model, signal } from '@angular/core';
+const counter = signal(1);
+
+function increment() {
+  counter.set(counter() + 1);
+}
+const mymod = model();
+
+defineMetadata({
+  selector: 'app-test'
+})
+
+onInit(() => {
+
+});
+
+onDestroy(() => {
+
+});
+
+</script>
+
+<template>
+<div class="foo">
+  text
+</div>
+
+<button (click)="increment()"></button>
+
+{{ counter() }}
+{{ counter() }}
+
+@for(const item of items) {
+<div [myVal]="true">hello</div>
+  }
+</template>
+
+<style>
+.foo {
+  color: red;}
+</style>

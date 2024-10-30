@@ -160,7 +160,7 @@ type AnalogComponentMetadata = Omit<import('@angular/core').Component, "template
   "changeDetection" |
   "styles" |
   "outputs" |
-  "inputs"> & { exposes: any[] };
+  "inputs"> & { exposes?: any[] };
 
 /**
  * Defines additional metadata for the component such as the

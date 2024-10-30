@@ -154,16 +154,26 @@ function createAnalogCode(snapshot: ts.IScriptSnapshot): AnalogVirtualCode {
           languageId: isTs ? "typescript" : "javascript",
           snapshot: {
             getText: (start, end) => `${text.substring(start, end)}
+
+type AnalogComponentMetadata = Omit<import('@angular/core').Component, "template" |
+  "standalone" |
+  "changeDetection" |
+  "styles" |
+  "outputs" |
+  "inputs">;
+
 /**
  * Defines additional metadata for the component such as the
  * selector, providers, and more.
  */
-declare function defineMetadata(metadata: {}): void;
+declare function defineMetadata(metadata: AnalogComponentMetadata): void;
+
 /**
  * Defines the lifecycle hook(ngOnInit) that is called when the
  * component is initialized.
  */
 declare function onInit(initFn: () => void): void;
+
 /**
  * Defines the lifecycle hook(ngOnDestroy) that is called when the
  * component is destroyed.
@@ -221,7 +231,18 @@ declare function onDestroy(destroyFn: () => void): void;`,
               },
             },
           ],
-          embeddedCodes: [],
+          embeddedCodes: [
+            {
+              id: "lang_" + langs + "_ts",
+              languageId: "typescript",
+              snapshot: {
+                getText: (_start, _end) => `increment();`,
+                getLength: () => `void increment;`.length,
+                getChangeRange: () => undefined,
+              },
+              mappings: []
+            }
+          ],
         };
       }
     }

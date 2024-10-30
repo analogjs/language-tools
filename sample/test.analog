@@ -1,6 +1,9 @@
 <script lang="ts">
 import { model, signal } from '@angular/core';
+import { RouterOutlet } from '@angular/router' with { analog: 'imports' };
+
 const counter = signal(1);
+const test = 1;
 
 function increment() {
   counter.set(counter() + 1);

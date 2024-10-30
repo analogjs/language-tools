@@ -16,6 +16,7 @@
 		"typescript": "latest"
 	},
 	"dependencies": {
-		"@angular/core": "^17.3.6"
+		"@angular/core": "^17.3.6",
+    "@angular/router": "^17.3.6"
 	}
 }

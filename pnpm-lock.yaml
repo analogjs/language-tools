@@ -11,6 +11,9 @@ importers:
       '@angular/core':
         specifier: ^17.3.6
         version: 17.3.11(rxjs@7.8.1)(zone.js@0.14.7)
+      '@angular/router':
+        specifier: ^17.3.6
+        version: 17.3.12(@angular/common@17.3.12(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))(rxjs@7.8.1))(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))(@angular/platform-browser@17.3.12(@angular/common@17.3.12(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))(rxjs@7.8.1))(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7)))(rxjs@7.8.1)
     devDependencies:
       '@types/node':
         specifier: latest
@@ -75,12 +78,39 @@ importers:
 
 packages:
 
+  '@angular/common@17.3.12':
+    resolution: {integrity: sha512-vabJzvrx76XXFrm1RJZ6o/CyG32piTB/1sfFfKHdlH1QrmArb8It4gyk9oEjZ1IkAD0HvBWlfWmn+T6Vx3pdUw==}
+    engines: {node: ^18.13.0 || >=20.9.0}
+    peerDependencies:
+      '@angular/core': 17.3.12
+      rxjs: ^6.5.3 || ^7.4.0
+
   '@angular/core@17.3.11':
     resolution: {integrity: sha512-2wPZwXFei3kVxK2ylIH6CdGebrC4kvooFx7qoX+250OITAEFMODJGdh/e3x0DpFUjlRvQtIFQ+YpQlfC5JnL4g==}
     engines: {node: ^18.13.0 || >=20.9.0}
     peerDependencies:
       rxjs: ^6.5.3 || ^7.4.0
       zone.js: ~0.14.0
+
+  '@angular/platform-browser@17.3.12':
+    resolution: {integrity: sha512-DYY04ptWh/ulMHzd+y52WCE8QnEYGeIiW3hEIFjCN8z0kbIdFdUtEB0IK5vjNL3ejyhUmphcpeT5PYf3YXtqWQ==}
+    engines: {node: ^18.13.0 || >=20.9.0}
+    peerDependencies:
+      '@angular/animations': 17.3.12
+      '@angular/common': 17.3.12
+      '@angular/core': 17.3.12
+    peerDependenciesMeta:
+      '@angular/animations':
+        optional: true
+
+  '@angular/router@17.3.12':
+    resolution: {integrity: sha512-dg7PHBSW9fmPKTVzwvHEeHZPZdpnUqW/U7kj8D29HTP9ur8zZnx9QcnbplwPeYb8yYa62JMnZSEel2X4PxdYBg==}
+    engines: {node: ^18.13.0 || >=20.9.0}
+    peerDependencies:
+      '@angular/common': 17.3.12
+      '@angular/core': 17.3.12
+      '@angular/platform-browser': 17.3.12
+      rxjs: ^6.5.3 || ^7.4.0
 
   '@emmetio/abbreviation@2.3.3':
     resolution: {integrity: sha512-mgv58UrU3rh4YgbE/TzgLQwJ3pFsHHhCLqY20aJq+9comytTXUDNGG/SMtSeMJdkpxgXSXunBGLD8Boka3JyVA==}
@@ -777,11 +807,31 @@ packages:
 
 snapshots:
 
+  '@angular/common@17.3.12(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))(rxjs@7.8.1)':
+    dependencies:
+      '@angular/core': 17.3.11(rxjs@7.8.1)(zone.js@0.14.7)
+      rxjs: 7.8.1
+      tslib: 2.6.3
+
   '@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7)':
     dependencies:
       rxjs: 7.8.1
       tslib: 2.6.3
       zone.js: 0.14.7
+
+  '@angular/platform-browser@17.3.12(@angular/common@17.3.12(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))(rxjs@7.8.1))(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))':
+    dependencies:
+      '@angular/common': 17.3.12(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))(rxjs@7.8.1)
+      '@angular/core': 17.3.11(rxjs@7.8.1)(zone.js@0.14.7)
+      tslib: 2.6.3
+
+  '@angular/router@17.3.12(@angular/common@17.3.12(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))(rxjs@7.8.1))(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))(@angular/platform-browser@17.3.12(@angular/common@17.3.12(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))(rxjs@7.8.1))(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7)))(rxjs@7.8.1)':
+    dependencies:
+      '@angular/common': 17.3.12(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))(rxjs@7.8.1)
+      '@angular/core': 17.3.11(rxjs@7.8.1)(zone.js@0.14.7)
+      '@angular/platform-browser': 17.3.12(@angular/common@17.3.12(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))(rxjs@7.8.1))(@angular/core@17.3.11(rxjs@7.8.1)(zone.js@0.14.7))
+      rxjs: 7.8.1
+      tslib: 2.6.3
 
   '@emmetio/abbreviation@2.3.3':
     dependencies:

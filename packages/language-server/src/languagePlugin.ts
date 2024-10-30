@@ -142,7 +142,11 @@ function createAnalogCode(snapshot: ts.IScriptSnapshot): AnalogVirtualCode {
         root.startTagEnd !== undefined &&
         root.endTagStart !== undefined
       ) {
-        const text = snapshot.getText(root.startTagEnd, root.endTagStart);
+        const text = snapshot.getText(root.startTagEnd, root.endTagStart).replace(/(with(((\n|\s)*).*)})/gm, function (_, _$1, $2) {
+          // replace "with { analog: 'imports' }" with "/**with { analog: 'imports' }*/"
+          // so its not evaluated inside the script tag
+          return `/**${$2}*/`;
+        });
         const lang = root.attributes?.lang;
         const isTs = lang === "ts" || lang === '"ts"' || lang === "'ts'";
         yield {
@@ -159,7 +163,7 @@ declare function defineMetadata(metadata: {}): void;
  * Defines the lifecycle hook(ngOnInit) that is called when the
  * component is initialized.
  */
-declare function onInit(destroyFn: () => void): void;
+declare function onInit(initFn: () => void): void;
 /**
  * Defines the lifecycle hook(ngOnDestroy) that is called when the
  * component is destroyed.

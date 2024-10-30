@@ -11,8 +11,9 @@ function increment() {
 const mymod = model();
 
 defineMetadata({
-  selector: 'app-test'
-})
+  selector: 'app-test',
+  exposes: [Math]
+});
 
 onInit(() => {
 
@@ -21,7 +22,6 @@ onInit(() => {
 onDestroy(() => {
 
 });
-
 </script>
 
 <template>

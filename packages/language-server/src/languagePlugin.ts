@@ -99,6 +99,54 @@ function createAnalogCode(snapshot: ts.IScriptSnapshot): AnalogVirtualCode {
     htmlDocument,
   };
 
+  function extractAnalogImports(code: string) {
+    const importRegex = /import\s*{(.*?)}\s+from\s+['"](.*?)['"];?/g;
+
+    const symbolMap = new Map();
+    const lines = code.split('\n');
+
+    lines.forEach(line => {
+      if (line.includes('analog:')) {
+        let match;
+        while ((match = importRegex.exec(line)) !== null) {
+          const symbols = match[1].split(',').map(symbol => symbol.trim());
+          const modulePath = match[2];
+
+          symbols.forEach(symbol => {
+            if (!symbolMap.has(symbol)) {
+              symbolMap.set(symbol, new Set());
+            }
+            symbolMap.get(symbol).add(modulePath);
+          });
+        }
+      }
+    });
+
+    let symbols: string[] = [];
+    symbolMap.forEach((_, symbol) => {
+      symbols.push(symbol);
+    });
+
+    return symbols;
+  }
+
+  function extractTemplateVariables(code: string) {
+    const regex = /^(?!export\s)(let|const)\s+(\w+)\s*=\s*(.+?);|^(?!export\s)function\s+(\w+)\s*\(\s*\)\s*{/gm;
+
+    const matches = code.matchAll(regex);
+
+    let vars: string[] = [];
+    for (const match of matches) {
+      if (match[1]) {
+        vars.push(`${match[2]}`);
+      } else if (match[4]) {
+        vars.push(`${match[4]}`);
+      }
+    }
+
+    return vars;
+  }
+
   function* createEmbeddedCodes(): Generator<VirtualCode> {
     let styles = 0;
     let scripts = 0;
@@ -142,11 +190,14 @@ function createAnalogCode(snapshot: ts.IScriptSnapshot): AnalogVirtualCode {
         root.startTagEnd !== undefined &&
         root.endTagStart !== undefined
       ) {
-        const text = snapshot.getText(root.startTagEnd, root.endTagStart).replace(/(with(((\n|\s)*).*)})/gm, function (_, _$1, $2) {
+        const originalText = snapshot.getText(root.startTagEnd, root.endTagStart);
+        const text = originalText.replace(/(with(((\n|\s)*).*)})/gm, function (_, _$1, $2) {
           // replace "with { analog: 'imports' }" with "/**with { analog: 'imports' }*/"
           // so its not evaluated inside the script tag
           return `/**${$2}*/`;
         });
+        const imports = extractAnalogImports(originalText);
+        const templateVars = extractTemplateVariables(originalText);
         const lang = root.attributes?.lang;
         const isTs = lang === "ts" || lang === '"ts"' || lang === "'ts'";
         yield {
@@ -178,7 +229,13 @@ declare function onInit(initFn: () => void): void;
  * Defines the lifecycle hook(ngOnDestroy) that is called when the
  * component is destroyed.
  */
-declare function onDestroy(destroyFn: () => void): void;`,
+declare function onDestroy(destroyFn: () => void): void;
+
+// @ts-ignore
+[${templateVars.join(',')}];
+
+// @ts-ignore
+[${imports.join(',')}];`,
             getLength: () => text.length,
             getChangeRange: () => undefined,
           },
@@ -231,18 +288,7 @@ declare function onDestroy(destroyFn: () => void): void;`,
               },
             },
           ],
-          embeddedCodes: [
-            {
-              id: "lang_" + langs + "_ts",
-              languageId: "typescript",
-              snapshot: {
-                getText: (_start, _end) => `increment();`,
-                getLength: () => `void increment;`.length,
-                getChangeRange: () => undefined,
-              },
-              mappings: []
-            }
-          ],
+          embeddedCodes: [],
         };
       }
     }

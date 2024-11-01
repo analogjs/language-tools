@@ -100,7 +100,7 @@ function createAnalogCode(snapshot: ts.IScriptSnapshot): AnalogVirtualCode {
   };
 
   function extractAnalogImports(code: string) {
-    const importRegex = /import\s*{(.*?)}\s+from\s+['"](.*?)['"];?/g;
+    const importRegex = /import\s*(.*?)\s+from\s+['"](.*?)['"];?/g;
 
     const symbolMap = new Map();
     const lines = code.split('\n');
@@ -109,7 +109,7 @@ function createAnalogCode(snapshot: ts.IScriptSnapshot): AnalogVirtualCode {
       if (line.includes('analog:')) {
         let match;
         while ((match = importRegex.exec(line)) !== null) {
-          const symbols = match[1].split(',').map(symbol => symbol.trim());
+          const symbols = match[1].split(',').map(symbol => symbol.replace(/{|}/g, '').trim());
           const modulePath = match[2];
 
           symbols.forEach(symbol => {

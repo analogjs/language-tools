@@ -4,12 +4,11 @@ This is the AnalogJS Language Tools extension for VSCode, powered by [Volar](htt
 
 ## Features
 
-This extension provides an improved editing experience for Analog SFCs, including:
+This extension provides language features for AnalogJS projects, including:
 
-* Syntax highlighting
-* Auto-importing (Future)
-* Completions lists (Future)
-* Quick info (Future)
+* Prop spreading support (Planned)
+* File-based routing support (Planned)
+* Server-side features (Planned)
 
 ## Supporting Analog
 
@@ -27,10 +26,6 @@ This extension provides an improved editing experience for Analog SFCs, includin
 - Select `Launch Client` from the drop down.
 - Run the launch config.
 - If you want to debug the server as well use the launch configuration `Attach to Server`
-- In the [Extension Development Host] instance of VSCode, open a `test.analog`
-  - Type `<d|` to try HTML completion
-  - Type `<style>.foo { c| }</style>` to try CSS completion
-  - Have `<style>.foo { }</style>` to see CSS Diagnostics
 
 ## Build .vsix
 

@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "vscode-analog",
-  "version": "0.2.0",
+  "version": "0.2.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/analogjs/language-tools.git",
@@ -19,10 +19,23 @@
   },
   "icon": "images/analog.png",
   "activationEvents": [
-    "onLanguage:html"
+    "onLanguage:html",
+    "onLanguage:typescript",
+    "onUri:angular-embedded-content"
   ],
   "main": "./dist/client.js",
-  "contributes": {},
+  "contributes": {
+    "commands": [
+      {
+        "command": "analogjs.goToServerLoader",
+        "title": "AnalogJS: Go to Server Loader"
+      },
+      {
+        "command": "analogjs.restartServer",
+        "title": "AnalogJS: Restart Language Server"
+      }
+    ]
+  },
   "scripts": {
     "build": "node scripts/build -- --minify",
     "watch": "npm run build -- --watch",

@@ -19,10 +19,18 @@
   },
   "icon": "images/analog.png",
   "activationEvents": [
-    "onLanguage:html"
+    "onLanguage:html",
+    "onLanguage:typescript"
   ],
   "main": "./dist/client.js",
-  "contributes": {},
+  "contributes": {
+    "commands": [
+      {
+        "command": "analogjs.goToServerLoader",
+        "title": "AnalogJS: Go to Server Loader"
+      }
+    ]
+  },
   "scripts": {
     "build": "node scripts/build -- --minify",
     "watch": "npm run build -- --watch",

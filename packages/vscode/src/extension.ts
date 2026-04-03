@@ -2,6 +2,8 @@ import * as serverProtocol from '@volar/language-server/protocol';
 import { createLabsInfo, getTsdk } from '@volar/vscode';
 import * as vscode from 'vscode';
 import * as lsp from 'vscode-languageclient/node';
+import * as path from 'node:path';
+import * as fs from 'node:fs';
 
 let client: lsp.BaseLanguageClient;
 
@@ -23,7 +25,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		},
 	};
 	const clientOptions: lsp.LanguageClientOptions = {
-		documentSelector: [{ language: 'html' }],
+		documentSelector: [{ language: 'html' }, { language: 'typescript' }],
 		initializationOptions: {
 			typescript: {
 				tsdk: (await getTsdk(context))!.tsdk,
@@ -37,6 +39,31 @@ export async function activate(context: vscode.ExtensionContext) {
 		clientOptions,
 	);
 	await client.start();
+
+	// Register go-to-server-loader command
+	context.subscriptions.push(
+		vscode.commands.registerCommand('analogjs.goToServerLoader', async () => {
+			const editor = vscode.window.activeTextEditor;
+			if (!editor) return;
+
+			const filePath = editor.document.uri.fsPath;
+			let targetPath: string | undefined;
+
+			if (filePath.endsWith('.page.ts')) {
+				targetPath = filePath.replace(/\.page\.ts$/, '.server.ts');
+			} else if (filePath.endsWith('.server.ts')) {
+				targetPath = filePath.replace(/\.server\.ts$/, '.page.ts');
+			}
+
+			if (targetPath && fs.existsSync(targetPath)) {
+				const doc = await vscode.workspace.openTextDocument(targetPath);
+				await vscode.window.showTextDocument(doc);
+			} else if (targetPath) {
+				const basename = path.basename(targetPath);
+				vscode.window.showInformationMessage(`No paired file found: ${basename}`);
+			}
+		}),
+	);
 
 	// support for https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volarjs-labs
 	const labsInfo = createLabsInfo(serverProtocol);

@@ -14,6 +14,12 @@ export interface RouteInfo {
   isCatchAll: boolean;
 }
 
+interface ProjectRoutes {
+  /** Project root directory (parent of src/app/pages) */
+  projectRoot: string;
+  routes: RouteInfo[];
+}
+
 /**
  * Converts a page filename to a raw path segment.
  * Adapted from @analogjs/router routes.ts toRawPath().
@@ -83,18 +89,24 @@ function collectFiles(dir: string, test: (name: string) => boolean): string[] {
 }
 
 /**
- * Find all `pages` directories under a root by looking for the
- * `src/app/pages` convention at any nesting depth.
- * Handles both standalone projects (src/app/pages) and monorepos
- * (apps/my-app/src/app/pages, projects/foo/src/app/pages).
+ * Find all projects with `src/app/pages` directories.
+ * Returns an array of { projectRoot, pagesDir } pairs.
  */
-function findPagesDirs(root: string): string[] {
-  const results: string[] = [];
+function findProjects(root: string): { projectRoot: string; pagesDir: string }[] {
+  const results: { projectRoot: string; pagesDir: string }[] = [];
+  const seen = new Set<string>();
+
+  function add(projectRoot: string, pagesDir: string) {
+    const resolved = path.resolve(pagesDir);
+    if (seen.has(resolved)) return;
+    seen.add(resolved);
+    results.push({ projectRoot: path.resolve(projectRoot), pagesDir: resolved });
+  }
 
   // Direct project: root/src/app/pages
   const direct = path.join(root, 'src', 'app', 'pages');
   if (fs.existsSync(direct)) {
-    results.push(direct);
+    add(root, direct);
   }
 
   // Monorepo: scan common app directories
@@ -109,9 +121,10 @@ function findPagesDirs(root: string): string[] {
     }
     for (const entry of entries) {
       if (!entry.isDirectory()) continue;
-      const candidate = path.join(parentDir, entry.name, 'src', 'app', 'pages');
+      const projectRoot = path.join(parentDir, entry.name);
+      const candidate = path.join(projectRoot, 'src', 'app', 'pages');
       if (fs.existsSync(candidate)) {
-        results.push(candidate);
+        add(projectRoot, candidate);
       }
     }
   }
@@ -120,10 +133,11 @@ function findPagesDirs(root: string): string[] {
 }
 
 /**
- * Scans the workspace for Analog page files and builds a route map.
+ * Scans the workspace for Analog page files and builds a route map,
+ * grouped by project so monorepo routes are scoped correctly.
  */
 export class RouteScanner {
-  private routes: RouteInfo[] = [];
+  private projects: ProjectRoutes[] = [];
   private workspaceRoot: string;
 
   constructor(workspaceRoot: string) {
@@ -134,39 +148,57 @@ export class RouteScanner {
    * Perform initial scan of all pages directories in the workspace.
    */
   scan(): void {
-    const pagesDirs = findPagesDirs(this.workspaceRoot);
-    const pageFiles: string[] = [];
-    for (const dir of pagesDirs) {
-      pageFiles.push(...collectFiles(dir, (name) => name.endsWith('.page.ts')));
-    }
+    this.projects = findProjects(this.workspaceRoot).map(({ projectRoot, pagesDir }) => {
+      const pageFiles = collectFiles(pagesDir, (name) => name.endsWith('.page.ts'));
 
-    this.routes = pageFiles.map((filePath) => {
-      const urlPath = fileToUrlPath(filePath);
-      const serverFilePath = filePath.replace(/\.page\.ts$/, '.server.ts');
-      const hasServer = fs.existsSync(serverFilePath);
+      const routes = pageFiles.map((filePath) => {
+        const urlPath = fileToUrlPath(filePath);
+        const serverFilePath = filePath.replace(/\.page\.ts$/, '.server.ts');
+        const hasServer = fs.existsSync(serverFilePath);
 
-      return {
-        urlPath,
-        filePath,
-        serverFilePath: hasServer ? serverFilePath : undefined,
-        params: extractParams(urlPath),
-        isCatchAll: urlPath.includes('**'),
-      };
+        return {
+          urlPath,
+          filePath,
+          serverFilePath: hasServer ? serverFilePath : undefined,
+          params: extractParams(urlPath),
+          isCatchAll: urlPath.includes('**'),
+        };
+      });
+
+      return { projectRoot, routes };
     });
   }
 
   /**
-   * Get all discovered routes.
+   * Determine which project a document belongs to based on its file path.
    */
-  getRoutes(): RouteInfo[] {
-    return this.routes;
+  private getProjectForFile(documentPath: string): ProjectRoutes | undefined {
+    const resolved = path.resolve(documentPath);
+    // Find the project whose root is an ancestor of the document.
+    // Sort by longest projectRoot first so nested projects match correctly.
+    return this.projects
+      .filter((p) => resolved.startsWith(p.projectRoot + path.sep) || resolved.startsWith(p.projectRoot + '/'))
+      .sort((a, b) => b.projectRoot.length - a.projectRoot.length)[0];
   }
 
   /**
-   * Find a route by its URL path.
+   * Get routes scoped to the project containing the given document.
+   * Falls back to all routes if no project match is found.
    */
-  findByUrlPath(urlPath: string): RouteInfo | undefined {
-    return this.routes.find((r) => r.urlPath === urlPath);
+  getRoutes(documentPath?: string): RouteInfo[] {
+    if (documentPath) {
+      const project = this.getProjectForFile(documentPath);
+      if (project) return project.routes;
+    }
+    // Fallback: return all routes
+    return this.projects.flatMap((p) => p.routes);
+  }
+
+  /**
+   * Find a route by its URL path, scoped to the document's project.
+   */
+  findByUrlPath(urlPath: string, documentPath?: string): RouteInfo | undefined {
+    return this.getRoutes(documentPath).find((r) => r.urlPath === urlPath);
   }
 
   /**
@@ -186,15 +218,16 @@ export class RouteScanner {
 
   /**
    * Find routes whose URL path matches a given string (for go-to-definition).
-   * Matches both exact paths and parameterized patterns.
+   * Scoped to the project containing the given document.
    */
-  findByUrlString(urlString: string): RouteInfo[] {
+  findByUrlString(urlString: string, documentPath?: string): RouteInfo[] {
     const normalized = urlString.startsWith('/') ? urlString : '/' + urlString;
-    const exact = this.routes.filter((r) => r.urlPath === normalized);
+    const routes = this.getRoutes(documentPath);
+    const exact = routes.filter((r) => r.urlPath === normalized);
     if (exact.length > 0) return exact;
 
     // Try matching parameterized routes: "/products/123" against "/products/:productId"
-    return this.routes.filter((r) => {
+    return routes.filter((r) => {
       if (r.isCatchAll) return false;
       const routeParts = r.urlPath.split('/');
       const urlParts = normalized.split('/');

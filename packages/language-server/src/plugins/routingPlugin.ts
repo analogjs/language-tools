@@ -68,6 +68,24 @@ function isRoutingContext(document: TextDocument, position: vscode.Position): bo
 }
 
 /**
+ * Extract a file system path from a document URI.
+ * Handles file:// URIs and angular-embedded-content:// URIs.
+ */
+function getDocumentFsPath(document: TextDocument): string | undefined {
+  const uri = URI.parse(document.uri);
+  if (uri.scheme === 'file') {
+    return uri.fsPath;
+  }
+  // angular-embedded-content://html/file%3A%2F%2F%2Fpath%2Fto%2Ffile.ts.html
+  if (uri.scheme === 'angular-embedded-content') {
+    const decoded = decodeURIComponent(uri.path);
+    const match = decoded.match(/file:\/\/(.+?)(?:\.html|\.css)?$/);
+    if (match) return match[1];
+  }
+  return undefined;
+}
+
+/**
  * Creates a Volar language service plugin that provides
  * route path completions and go-to-definition for Analog's file-based routing.
  */
@@ -94,7 +112,8 @@ export function createRoutingPlugin(
           const stringInfo = getStringAtPosition(document, position);
           if (!stringInfo) return undefined;
 
-          const routes = scanner.getRoutes();
+          const documentPath = getDocumentFsPath(document);
+          const routes = scanner.getRoutes(documentPath);
           if (routes.length === 0) return undefined;
 
           const items: vscode.CompletionItem[] = routes
@@ -143,7 +162,8 @@ export function createRoutingPlugin(
           const value = stringInfo.value;
           if (!value.startsWith('/')) return undefined;
 
-          const matches = scanner.findByUrlString(value);
+          const documentPath = getDocumentFsPath(document);
+          const matches = scanner.findByUrlString(value, documentPath);
           if (matches.length === 0) return undefined;
 
           return matches.map((route) =>

@@ -1,4 +1,3 @@
-import { analogLanguagePlugin } from './languagePlugin';
 import { create as createEmmetService } from 'volar-service-emmet';
 import { create as createHtmlService } from 'volar-service-html';
 import { create as createCssService } from 'volar-service-css';
@@ -15,7 +14,7 @@ connection.onInitialize(params => {
 	return server.initialize(
 		params,
 		createTypeScriptProject(tsdk.typescript, tsdk.diagnosticMessages, () => ({
-			languagePlugins:[analogLanguagePlugin]
+			languagePlugins: []
 		})),
 		[
 			createHtmlService(),

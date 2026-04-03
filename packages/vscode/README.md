@@ -4,12 +4,11 @@ This is the AnalogJS Language Tools extension for VSCode, powered by [Volar](htt
 
 ## Features
 
-This extension provides an improved editing experience for Analog SFCs, including:
+This extension provides language features for AnalogJS projects, including:
 
-* Syntax highlighting
-* Auto-importing (Future)
-* Completions lists (Future)
-* Quick info (Future)
+* Prop spreading support (Planned)
+* File-based routing support (Planned)
+* Server-side features (Planned)
 
 ## Supporting Analog
 

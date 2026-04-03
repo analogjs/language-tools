@@ -1,5 +1,5 @@
 import * as serverProtocol from '@volar/language-server/protocol';
-import { activateAutoInsertion, createLabsInfo, getTsdk } from '@volar/vscode';
+import { createLabsInfo, getTsdk } from '@volar/vscode';
 import * as vscode from 'vscode';
 import * as lsp from 'vscode-languageclient/node';
 
@@ -23,7 +23,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		},
 	};
 	const clientOptions: lsp.LanguageClientOptions = {
-		documentSelector: [{ language: 'analog' }],
+		documentSelector: [{ language: 'html' }],
 		initializationOptions: {
 			typescript: {
 				tsdk: (await getTsdk(context))!.tsdk,
@@ -38,11 +38,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	);
 	await client.start();
 
-	// support for auto close tag
-	activateAutoInsertion('analog', client);
-
 	// support for https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volarjs-labs
-	// ref: https://twitter.com/johnsoncodehk/status/1656126976774791168
 	const labsInfo = createLabsInfo(serverProtocol);
 	labsInfo.addLanguageClient(client);
 	return labsInfo.extensionExports;

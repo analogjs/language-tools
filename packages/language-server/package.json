@@ -27,7 +27,6 @@
 		"volar-service-emmet": "0.0.70",
 		"volar-service-html": "0.0.70",
 		"volar-service-typescript": "0.0.70",
-		"vscode-html-languageservice": "^5.2.0",
 		"vscode-uri": "^3.0.8"
 	},
 	"publishConfig": {

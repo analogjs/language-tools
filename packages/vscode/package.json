@@ -19,78 +19,10 @@
   },
   "icon": "images/analog.png",
   "activationEvents": [
-    "onLanguage:analog"
+    "onLanguage:html"
   ],
   "main": "./dist/client.js",
-  "contributes": {
-    "languages": [
-      {
-        "id": "analog",
-        "icon": {
-          "light": "images/analog.png",
-          "dark": "images/analog.png"
-        },
-        "extensions": [
-          ".analog",
-          ".ag"
-        ]
-      }
-    ],
-    "grammars": [
-      {
-        "language": "analog",
-        "scopeName": "source.analog",
-        "path": "./syntaxes/analog.tmLanguage.json",
-        "embeddedLanguages": {
-          "source.analog": "analog",
-          "text.html.derivative": "html",
-          "text.html.markdown": "markdown",
-          "source.css": "css",
-          "source.css.scss": "scss",
-          "source.css.less": "less",
-          "source.sass": "sass",
-          "source.stylus": "stylus",
-          "source.postcss": "postcss"
-        }
-      },
-      {
-        "path": "./syntaxes/template.json",
-        "scopeName": "template.ng",
-        "injectTo": [
-          "text.html.derivative",
-          "source.analog"
-        ],
-        "embeddedLanguages": {
-          "text.html": "html",
-          "source.css": "css"
-        }
-      },
-      {
-        "path": "./syntaxes/template-blocks.json",
-        "scopeName": "template.blocks.ng",
-        "injectTo": [
-          "text.html.derivative",
-          "source.analog"
-        ],
-        "embeddedLanguages": {
-          "text.html": "html",
-          "expression.ng": "javascript"
-        }
-      },
-      {
-        "path": "./syntaxes/template-tag.json",
-        "scopeName": "template.tag.ng",
-        "injectTo": [
-          "text.html.derivative",
-          "source.analog"
-        ]
-      },
-      {
-        "path": "./syntaxes/expression.json",
-        "scopeName": "expression.ng"
-      }
-    ]
-  },
+  "contributes": {},
   "scripts": {
     "build": "node scripts/build -- --minify",
     "watch": "npm run build -- --watch",

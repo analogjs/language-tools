@@ -13,7 +13,7 @@ export const analogLanguagePlugin: LanguagePlugin<URI> = {
       return "analog";
     }
   },
-  createVirtualCode(_uri, languageId, snapshot) {
+  createVirtualCode(_uri, languageId, snapshot, _ctx) {
     if (languageId === "analog") {
       return createAnalogCode(snapshot);
     }

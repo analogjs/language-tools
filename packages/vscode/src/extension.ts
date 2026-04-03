@@ -25,7 +25,11 @@ export async function activate(context: vscode.ExtensionContext) {
 		},
 	};
 	const clientOptions: lsp.LanguageClientOptions = {
-		documentSelector: [{ language: 'html' }, { language: 'typescript' }],
+		documentSelector: [
+			{ language: 'html' },
+			{ language: 'typescript' },
+			{ scheme: 'angular-embedded-content' },
+		],
 		initializationOptions: {
 			typescript: {
 				tsdk: (await getTsdk(context))!.tsdk,
@@ -39,6 +43,15 @@ export async function activate(context: vscode.ExtensionContext) {
 		clientOptions,
 	);
 	await client.start();
+
+	// Register restart language server command
+	context.subscriptions.push(
+		vscode.commands.registerCommand('analogjs.restartServer', async () => {
+			await client.stop();
+			await client.start();
+			vscode.window.showInformationMessage('AnalogJS Language Server restarted.');
+		}),
+	);
 
 	// Register go-to-server-loader command
 	context.subscriptions.push(

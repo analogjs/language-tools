@@ -20,7 +20,8 @@
   "icon": "images/analog.png",
   "activationEvents": [
     "onLanguage:html",
-    "onLanguage:typescript"
+    "onLanguage:typescript",
+    "onUri:angular-embedded-content"
   ],
   "main": "./dist/client.js",
   "contributes": {
@@ -28,6 +29,10 @@
       {
         "command": "analogjs.goToServerLoader",
         "title": "AnalogJS: Go to Server Loader"
+      },
+      {
+        "command": "analogjs.restartServer",
+        "title": "AnalogJS: Restart Language Server"
       }
     ]
   },

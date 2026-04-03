@@ -83,6 +83,43 @@ function collectFiles(dir: string, test: (name: string) => boolean): string[] {
 }
 
 /**
+ * Find all `pages` directories under a root by looking for the
+ * `src/app/pages` convention at any nesting depth.
+ * Handles both standalone projects (src/app/pages) and monorepos
+ * (apps/my-app/src/app/pages, projects/foo/src/app/pages).
+ */
+function findPagesDirs(root: string): string[] {
+  const results: string[] = [];
+
+  // Direct project: root/src/app/pages
+  const direct = path.join(root, 'src', 'app', 'pages');
+  if (fs.existsSync(direct)) {
+    results.push(direct);
+  }
+
+  // Monorepo: scan common app directories
+  const monorepoParents = ['apps', 'projects', 'packages'];
+  for (const parent of monorepoParents) {
+    const parentDir = path.join(root, parent);
+    let entries: fs.Dirent[];
+    try {
+      entries = fs.readdirSync(parentDir, { withFileTypes: true });
+    } catch {
+      continue;
+    }
+    for (const entry of entries) {
+      if (!entry.isDirectory()) continue;
+      const candidate = path.join(parentDir, entry.name, 'src', 'app', 'pages');
+      if (fs.existsSync(candidate)) {
+        results.push(candidate);
+      }
+    }
+  }
+
+  return results;
+}
+
+/**
  * Scans the workspace for Analog page files and builds a route map.
  */
 export class RouteScanner {
@@ -94,11 +131,14 @@ export class RouteScanner {
   }
 
   /**
-   * Perform initial scan of the pages directory.
+   * Perform initial scan of all pages directories in the workspace.
    */
   scan(): void {
-    const pagesDir = path.join(this.workspaceRoot, 'src', 'app', 'pages');
-    const pageFiles = collectFiles(pagesDir, (name) => name.endsWith('.page.ts'));
+    const pagesDirs = findPagesDirs(this.workspaceRoot);
+    const pageFiles: string[] = [];
+    for (const dir of pagesDirs) {
+      pageFiles.push(...collectFiles(dir, (name) => name.endsWith('.page.ts')));
+    }
 
     this.routes = pageFiles.map((filePath) => {
       const urlPath = fileToUrlPath(filePath);

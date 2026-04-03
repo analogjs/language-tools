@@ -17,7 +17,6 @@ function getStringAtPosition(
   );
   const offset = position.character;
 
-  // Try each quote type, preferring the innermost match
   const quotes = ['"', "'", '`'];
   let bestMatch: { value: string; range: vscode.Range; start: number } | undefined;
 
@@ -41,7 +40,6 @@ function getStringAtPosition(
     }
     if (end === -1) continue;
 
-    // Pick the tightest (innermost) match
     if (!bestMatch || start > bestMatch.start) {
       const value = line.substring(start + 1, end);
       const range = vscode.Range.create(position.line, start + 1, position.line, end);
@@ -79,8 +77,43 @@ function getDocumentFsPath(document: TextDocument): string | undefined {
 }
 
 /**
+ * Find all route-path strings in a document and return their ranges and values.
+ */
+function findRouteStrings(document: TextDocument): { value: string; range: vscode.Range }[] {
+  const text = document.getText();
+  const results: { value: string; range: vscode.Range }[] = [];
+
+  // Match routerLink="..." routerLink='...' [routerLink]="'...'"
+  const patterns = [
+    /routerLink\s*=\s*"(\/[^"]*)"/g,
+    /routerLink\s*=\s*'(\/[^']*)'/g,
+    /\[routerLink\]\s*=\s*"'(\/[^']*)'"/g,
+    /\[routerLink\]\s*=\s*"\"(\/[^\"]*)\""/g,
+    /\.navigateByUrl\(\s*['"](\/[^'"]*)['"]/g,
+    /route\(\s*['"](\/[^'"]*)['"]/g,
+  ];
+
+  for (const pattern of patterns) {
+    let match: RegExpExecArray | null;
+    while ((match = pattern.exec(text)) !== null) {
+      const value = match[1];
+      const valueStart = match.index + match[0].indexOf(value);
+      const startPos = document.positionAt(valueStart);
+      const endPos = document.positionAt(valueStart + value.length);
+      results.push({
+        value,
+        range: vscode.Range.create(startPos, endPos),
+      });
+    }
+  }
+
+  return results;
+}
+
+/**
  * Creates a Volar language service plugin that provides
- * route path completions and go-to-definition for Analog's file-based routing.
+ * route path completions, document links, and go-to-definition
+ * for Analog's file-based routing.
  */
 export function createRoutingPlugin(
   scanner: RouteScanner,
@@ -93,6 +126,7 @@ export function createRoutingPlugin(
         triggerCharacters: ["'", '"', '/', '`'],
       },
       definitionProvider: true,
+      documentLinkProvider: {},
     },
 
     create() {
@@ -112,11 +146,27 @@ export function createRoutingPlugin(
           const items: vscode.CompletionItem[] = routes
             .filter((route) => !route.isCatchAll)
             .map((route) => {
+              const hasParams = route.params.length > 0;
+              let insertText: string;
+
+              if (hasParams) {
+                // Convert :param to ${N:param} snippet tab stops
+                let tabIndex = 1;
+                insertText = route.urlPath.replace(/:([^/]+)/g, () => {
+                  const param = route.params[tabIndex - 1] || 'value';
+                  return `\${${tabIndex++}:${param}}`;
+                });
+              } else {
+                insertText = route.urlPath;
+              }
+
               const item: vscode.CompletionItem = {
                 label: route.urlPath,
                 kind: vscode.CompletionItemKind.File,
                 detail: route.filePath.replace(/^.*\/src\//, 'src/'),
-                sortText: route.params.length > 0 ? '1' : '0',
+                sortText: hasParams ? '1' : '0',
+                insertTextFormat: hasParams ? 2 as const : 1 as const,
+                textEdit: vscode.TextEdit.replace(stringInfo.range, insertText),
               };
 
               if (route.params.length > 0) {
@@ -146,6 +196,26 @@ export function createRoutingPlugin(
             isIncomplete: false,
             items,
           };
+        },
+
+        provideDocumentLinks(document: TextDocument) {
+          const documentPath = getDocumentFsPath(document);
+          const routeStrings = findRouteStrings(document);
+          if (routeStrings.length === 0) return undefined;
+
+          const links: vscode.DocumentLink[] = [];
+          for (const { value, range } of routeStrings) {
+            const matches = scanner.findByUrlString(value, documentPath);
+            if (matches.length > 0) {
+              links.push({
+                range,
+                target: URI.file(matches[0].filePath).toString(),
+                tooltip: `Go to ${matches[0].filePath.replace(/^.*\/src\//, 'src/')}`,
+              });
+            }
+          }
+
+          return links;
         },
 
         provideDefinition(document: TextDocument, position: vscode.Position) {
